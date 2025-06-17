@@ -1,0 +1,19 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-std=c++17",
+      "-Iheaders/",
+      "-Wall",
+      "-I/opt/homebrew/Cellar/ftxui/6.1.9/include",
+      "-g",
+      "-c",
+      "-o",
+      "obj/debug/src/main.o",
+      "src/main.cc"
+    ],
+    "directory": "/Users/bobbo/Developer/c++/TicTacToe",
+    "file": "/Users/bobbo/Developer/c++/TicTacToe/src/main.cc",
+    "output": "/Users/bobbo/Developer/c++/TicTacToe/obj/debug/src/main.o"
+  }
+]

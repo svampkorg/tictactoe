@@ -1,10 +1,14 @@
 # Compiler
-CXX = g++
+# CXX = g++-15
+CXX = clang++
+
+FTXUI_CXXFLAGS = $(shell pkg-config --cflags ftxui)
+FTXUI_LDFLAGS = $(shell pkg-config --libs ftxui)
 
 # --- Common compiler flags for both builds ---
 # -Iheaders [the directory for header files]
 # -Wall [enables all warnings]
-CXXFLAGS_COMMON = -std=c++17 -Iheaders/ -Wall
+CXXFLAGS_COMMON = -std=c++17 -Iheaders/ -Wall $(FTXUI_CXXFLAGS)
 
 # --- Debug specific flags ---
 # -g [adds debugging information]
@@ -35,7 +39,7 @@ all: $(TARGET)
 # --- Rules for the Debug Build ---
 $(TARGET): $(OBJECTS)
 	@echo "Linking debug build..."
-	$(CXX) $(CXXFLAGS_COMMON) $(CXXFLAGS_DEBUG) -o $(TARGET) $(OBJECTS)
+	$(CXX) $(CXXFLAGS_COMMON) $(CXXFLAGS_DEBUG) -o $(TARGET) $(OBJECTS) $(FTXUI_LDFLAGS)
 
 obj/debug/%.o: %.cc
 	@echo "Compiling $< for debug..."
@@ -49,7 +53,7 @@ release: $(TARGET_RELEASE)
 
 $(TARGET_RELEASE): $(OBJECTS_RELEASE)
 	@echo "Linking release build..."
-	$(CXX) $(CXXFLAGS_COMMON) $(CXXFLAGS_RELEASE) -o $(TARGET_RELEASE) $(OBJECTS_RELEASE)
+	$(CXX) $(CXXFLAGS_COMMON) $(CXXFLAGS_RELEASE) -o $(TARGET_RELEASE) $(OBJECTS_RELEASE) $(FTXUI_LDFLAGS)
 
 # New rule specifically for release objects.
 # It compiles sources and places the .o files into the 'obj/release' directory.

@@ -1,0 +1,62 @@
+#include <iostream>
+#include <termios.h>
+#include <unistd.h>
+
+using namespace std;
+
+void restore_terminal(const struct termios &original_mode) {
+  if (tcsetattr(STDIN_FILENO, TCSANOW, &original_mode) == -1) {
+    cerr << "Error: could not restore old terminal mode" << endl;
+  } else {
+    cout << "Old terminal mode has been restored" << endl;
+  }
+}
+
+int main() {
+  // create a terminal ios struct to save settings in 
+  struct termios original_termios;
+
+  // Try to read the terminal attributes into original_termios
+  if (tcgetattr(STDIN_FILENO, &original_termios) == -1) {
+    cerr << "Error: could not read terminal settings." << endl;
+    return 1;
+  } else {
+    cout << "Saved old terminal mode" << endl;
+  }
+
+  // copy the original term ios into new struct
+  struct termios new_termios = original_termios;
+
+  // turn off canonical mode and echo, read input directly and dont echo it
+  new_termios.c_cflag &= ~(ICANON | ECHO);
+
+  // set these new attributes in new_termios 
+    if (tcsetattr(STDIN_FILENO, TCSANOW, &new_termios) == -1) {
+    cerr << "Error: could not set terminal settings" << endl;
+    return 1;
+  } else {
+    cout << "New terminal mode set" << endl;
+  }
+
+  cout << "Enter characters (press 'q' to quit):" << endl;
+
+  string input;
+  char key = 0;
+  while (true) {
+    if (read(STDIN_FILENO, &key, 1) > 0) {
+      if (key == 'q') {
+        break;
+      }
+
+      input += key;
+
+      // \r to move to start of line without newline
+      cout << "\rYou have typed: " << input << flush;
+    }
+  }
+
+  restore_terminal(original_termios);
+  cout << "\nExiting." << endl;
+
+  return 0;
+}
