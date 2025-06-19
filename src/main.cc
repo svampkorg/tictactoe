@@ -81,11 +81,12 @@ int main() {
     case ' ':
       state.put_player_mark();
       state.toggle_player();
+      state.run_board_check();
+      break;
+    case 'N':
+      state.new_board();
       break;
     default:
-      if (event == Event::n) {
-        state.new_board();
-      }
       break;
     }
     system("clear");
