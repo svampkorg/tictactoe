@@ -1,18 +1,82 @@
+#include "ftxui/component/event.hpp"
 #include "toestate.h"
+#include <ftxui/component/component.hpp>
+#include <ftxui/component/screen_interactive.hpp>
+#include <ftxui/screen/screen.hpp>
 
 using namespace std;
 
 int main() {
+
+  using namespace ftxui;
+  auto state = Toestate();
+
+  state.new_board();
+
+  auto document = state.get_board();
+  auto screen = ScreenInteractive::TerminalOutput();
+  auto renderer = Renderer([&] { return document; });
+
+  system("clear");
+
+  auto component = CatchEvent(renderer, [&](Event event) {
+    auto character = event.character().front();
+
+    switch (character) {
+    case 'q':
+      screen.Exit();
+      return true;
+    case 'h':
+      state.move_cursor_left();
+      break;
+    case 'j':
+      state.move_cursor_down();
+      break;
+    case 'k':
+      state.move_cursor_up();
+      break;
+    case 'l':
+      state.move_cursor_right();
+      break;
+    case ' ':
+      state.put_player_mark();
+      state.toggle_player();
+      break;
+    default:
+      if (event == Event::Return) {
+        state.new_board();
+      }
+      break;
+    }
+    system("clear");
+
+    state.check_board();
+
+    auto winner = state.get_winner();
+    auto board_full = state.board_is_fully_played();
+
+    if ((winner != Player::None && !board_full) || (winner == Player::None && board_full)) {
+      document = state.declare_winner();
+      state.new_board();
+    } else {
+      document = state.get_board();
+    }
+
+    return false;
+  });
+
+  screen.Loop(component);
 
   // Element document = hbox({
   //     text("left") | border,
   //     text("middle") | border | flex,
   //     text("right") | border,
   // });
-
-  auto state = Toestate();
-
-  state.draw_board();
+  // auto screen =
+  //     ftxui::Screen::Create(Dimension::Full(), Dimension::Fit(document));
+  // Render(screen, document);
+  // screen.Print();
+  // std::cout << screen.ToString() << '\0' << endl;
 
   return EXIT_SUCCESS;
 }

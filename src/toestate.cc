@@ -1,54 +1,89 @@
 #include "../headers/toestate.h"
-#include <ftxui/dom/elements.hpp>
-#include <ftxui/screen/screen.hpp>
-#include <iostream>
-#include <optional>
-#include <string>
-#include <sys/qos.h>
+#include "ftxui/dom/elements.hpp"
+#include <algorithm>
 
 Toestate::Toestate() : board(9) {}
-void Toestate::new_board() { fill(board.begin(), board.end(), nullopt); }
-void Toestate::draw_board() {
+void Toestate::new_board() {
+  fill(board.begin(), board.end(), Player::None);
+  player_active = Player::Cross;
+  player_winner = Player::None;
+}
+ftxui::Element Toestate::declare_winner() {
+  using namespace ftxui;
 
-  system("clear");
+  Element winner_text;
+  switch (player_winner) {
+  case Player::Circle:
+    winner_text = text("0") | color(Color::Green);
+    break;
+  case Player::Cross:
+    winner_text = text("X") | color(Color::Red);
+    break;
+  case Player::None:
+    winner_text = text("It's a draw!") | color(Color::White);
+    break;
+  }
+
+  auto winner = [&] {
+    auto content = vbox({
+        hbox({winner_text}) | color(Color::Purple),
+    });
+    return window(text(L" Winner is! "), content);
+  };
+
+  Element document =
+      window(text("Board"), winner()) | color(Color::NavajoWhite1);
+
+  document = document | size(WIDTH, ftxui::EQUAL, 15);
+
+  return document;
+}
+ftxui::Element Toestate::get_board() {
 
   using namespace ftxui;
 
   vector<Elements> lines;
   Elements line;
 
-  cout << "Cursor pos is: " << cursor_pos << endl;
-
   for (int i = 0; i < board.size(); ++i) {
-    const auto &place = board[i];
+    // const auto &place = board[i];
 
     string left = " ";
     string right = " ";
-    string place_sign = to_string(i);
 
-    if (place.has_value()) {
-      if (place.value()) {
-        place_sign = "O";
-      } else {
-        place_sign = "X";
+    auto board_place = [&](Player place) {
+      Element player_mark_text = text(" ");
+
+      switch (place) {
+      case Player::Circle:
+        player_mark_text = text("O") | color(Color::Green);
+        break;
+      case Player::Cross:
+        player_mark_text = text("X") | color(Color::Red);
+        break;
+      default:
+        break;
       }
-    } else {
-      place_sign = " ";
-    }
 
-    auto board_place = [&]() {
       auto content = vbox({
-                         hbox({text(left), text(place_sign), text(right)}),
+                         hbox({text(left), player_mark_text, text(right)}),
                      }) |
                      border;
+
       if (i == cursor_pos) {
-        return content | color(Color::Red);
-      } else {
-        return content | color(Color::Green);
+        switch (player_active) {
+        case Player::Circle:
+          return content | color(Color::Green);
+        case Player::Cross:
+          return content | color(Color::Red);
+        default:
+          break;
+        }
       }
+      return content | color(Color::White);
     };
 
-    line.push_back(board_place());
+    line.push_back(board_place(board[i]));
 
     switch (i) {
     case 2:
@@ -66,55 +101,12 @@ void Toestate::draw_board() {
     }
   }
 
-  // auto summary = [&] {
-  //   auto content = vbox({
-  //       hbox({text(L"- done:   "), text(L"3") | bold}) | color(Color::Green),
-  //       hbox({text(L"- active: "), text(L"2") | bold}) |
-  //       color(Color::RedLight), hbox({text(L"- queue:  "), text(L"9") |
-  //       bold}) | color(Color::Red),
-  //   });
-  //   return window(text(L" Summary "), content);
-  // };
-
-  Element document = window(text("Board"), gridbox(lines));
+  Element document =
+      window(text("Board"), gridbox(lines)) | color(Color::NavajoWhite1);
 
   document = document | size(WIDTH, ftxui::EQUAL, 15);
 
-  auto screen = Screen::Create(Dimension::Full(), Dimension::Fit(document));
-  Render(screen, document);
-
-  cout << screen.ToString() << '\0' << endl;
-
-  // for (int i = 0; i < board.size(); ++i) {
-  //   const auto &place = board[i];
-  //
-  //   string left = "[";
-  //   string right = "]";
-  //
-  //   if (i == cursor_pos) {
-  //     left = "(";
-  //     right = ")";
-  //   }
-  //
-  //   sstream.clear();
-  //
-  //   if (i % 3 == 0) {
-  //     sstream << endl;
-  //   }
-  //
-  //   if (place == true) {
-  //     sstream << left << "o" << right;
-  //   } else if (place == false) {
-  //     sstream << left << "x" << right;
-  //   } else {
-  //     sstream << left << i << right;
-  //   }
-  // }
-  //
-  // sstream << endl;
-  //
-  // cout << sstream.str();
-  // cout << endl;
+  return document;
 }
 
 void Toestate::move_cursor_up() {
@@ -141,10 +133,67 @@ void Toestate::move_cursor_right() {
   }
 }
 
-void Toestate::put_x() { board[cursor_pos] = true; }
+void Toestate::put_player_mark() {
+  if (board[cursor_pos] == Player::None) {
+    board[cursor_pos] = player_active;
+  }
+}
 
-void Toestate::put_o() { board[cursor_pos] = false; }
+void Toestate::put_none() { board[cursor_pos] = Player::None; }
 
-void Toestate::put_nullopt() { board[cursor_pos] = nullopt; }
+void Toestate::toggle_player() {
+  switch (player_active) {
+  case Player::Circle:
+    player_active = Player::Cross;
+    break;
+  case Player::Cross:
+    player_active = Player::Circle;
+    break;
+  default:
+    break;
+  }
+}
 
-void Toestate::toggle_player() { player = !player; }
+Player Toestate::get_player() { return player_active; }
+Player Toestate::get_winner() { return player_winner; }
+
+bool Toestate::board_is_fully_played() {
+  return all_of(board.begin(), board.end(),
+                [](const auto &element) { return element != Player::None; });
+  // return any_of(board.begin(), board.end(),
+  //               [](const auto &element) { element != Player::None; });
+}
+
+void Toestate::check_board() {
+
+  // lambda will return true if a, b and c are the same
+  auto board_row_status = [&](vector<int> combination) -> tuple<bool, Player> {
+    auto winner = is_same_player_and_winner_is(
+        {board[combination[0]], board[combination[1]], board[combination[2]]});
+    return winner;
+  };
+
+  vector<vector<int>> board_combinations = {
+      {0, 1, 2}, {0, 3, 6}, {0, 4, 8}, {1, 4, 7},
+      {2, 4, 6}, {2, 5, 8}, {3, 4, 5}, {6, 7, 8},
+  };
+
+  bool is_same_in_row = false;
+  Player same_row_mark = Player::None;
+
+  for (auto &combination : board_combinations) {
+
+    auto board_combination_status = board_row_status(combination);
+
+    is_same_in_row = get<0>(board_combination_status);
+    same_row_mark = get<1>(board_combination_status);
+
+    if (is_same_in_row && same_row_mark != Player::None) {
+      player_winner = same_row_mark;
+      break;
+    } else {
+      is_same_in_row = false;
+      same_row_mark = Player::None;
+    }
+  }
+}
