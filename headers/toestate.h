@@ -19,13 +19,11 @@ class Toestate {
     Toestate();
 
     void new_board();
-    Player get_player();
-    Player get_winner();
 
-    ftxui::Element ftxui_get_board();
-    ftxui::Element ftxui_declare_winner();
-    ftxui::Element ftxui_active_player();
-    ftxui::Element ftxui_instructions();
+    const Player& get_player() const;
+    const Player& get_winner() const;
+    const int& get_cursor_pos() const;
+    const vector<Player>& get_board() const;
 
     void move_cursor_up();
     void move_cursor_down();
@@ -35,6 +33,6 @@ class Toestate {
     void put_player_mark();
     void toggle_player();
 
-    void check_board();
-    bool board_is_fully_played();
+    void run_board_check();
+    bool board_is_fully_played() const;
 };

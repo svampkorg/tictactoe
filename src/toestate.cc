@@ -2,110 +2,15 @@
 #include <algorithm>
 
 Toestate::Toestate() : board(9) {}
+
 void Toestate::new_board() {
   fill(board.begin(), board.end(), Player::None);
   player_active = Player::Cross;
   player_winner = Player::None;
 }
-ftxui::Element Toestate::ftxui_declare_winner() {
-  using namespace ftxui;
 
-  Element winner_text;
-  switch (player_winner) {
-  case Player::Circle:
-    winner_text = text("Circle") | color(Color::Green);
-    break;
-  case Player::Cross:
-    winner_text = text("Cross") | color(Color::Red);
-    break;
-  case Player::None:
-    winner_text = text("It's a draw!") | color(Color::White);
-    break;
-  }
-
-  auto winner = [&] {
-    auto content = vbox({
-        hbox({winner_text}) | color(Color::Purple),
-    });
-    return window(text(L" Game result! "), content);
-  };
-
-  Element document =
-      window(text("Board"), winner()) | color(Color::NavajoWhite1);
-
-  document = document | size(WIDTH, ftxui::EQUAL, 15);
-
-  return document;
-}
-
-ftxui::Element Toestate::ftxui_get_board() {
-
-  using namespace ftxui;
-
-  vector<Elements> lines;
-  Elements line;
-
-  for (int i = 0; i < board.size(); ++i) {
-
-    string left = " ";
-    string right = " ";
-
-    auto board_place = [&](const Player place) {
-      Element player_mark_text = text(" ");
-
-      switch (place) {
-      case Player::Circle:
-        player_mark_text = text("O") | color(Color::Green);
-        break;
-      case Player::Cross:
-        player_mark_text = text("X") | color(Color::Red);
-        break;
-      default:
-        break;
-      }
-
-      auto content = vbox({
-                         hbox({text(left), player_mark_text, text(right)}),
-                     }) |
-                     border;
-
-      if (i == cursor_pos) {
-        switch (player_active) {
-        case Player::Circle:
-          return content | color(Color::Green);
-        case Player::Cross:
-          return content | color(Color::Red);
-        default:
-          break;
-        }
-      }
-      return content | color(Color::White);
-    };
-
-    line.push_back(board_place(board[i]));
-
-    switch (i) {
-    case 2:
-      lines.push_back(line);
-      line.clear();
-      break;
-    case 5:
-      lines.push_back(line);
-      line.clear();
-      break;
-    case 8:
-      lines.push_back(line);
-      line.clear();
-      break;
-    }
-  }
-
-  Element document =
-      window(text("Board"), gridbox(lines)) | color(Color::NavajoWhite1);
-
-  document = document | size(WIDTH, ftxui::EQUAL, 15);
-
-  return document;
+const vector<Player>& Toestate::get_board() const {
+  return board;
 }
 
 void Toestate::move_cursor_up() {
@@ -151,44 +56,46 @@ void Toestate::toggle_player() {
   }
 }
 
-Player Toestate::get_player() { return player_active; }
-Player Toestate::get_winner() { return player_winner; }
+const Player& Toestate::get_player() const { return player_active; }
+const Player& Toestate::get_winner() const { return player_winner; }
+const int& Toestate::get_cursor_pos() const { return cursor_pos; }
 
-bool Toestate::board_is_fully_played() {
+bool Toestate::board_is_fully_played() const {
+
   return all_of(board.begin(), board.end(),
                 [](const auto &element) { return element != Player::None; });
+
 }
 
-void Toestate::check_board() {
+void Toestate::run_board_check() {
 
-  // lambda will return true if a, b and c are the same
-  auto board_row_status = [&](vector<int> combination) -> tuple<bool, Player> {
-    auto winner = is_same_player_and_winner_is(
+  auto get_is_same_mark_and_winning_player = [&](vector<int> combination) -> tuple<bool, Player> {
+    auto game_status = get_game_status_from_combination(
         {board[combination[0]], board[combination[1]], board[combination[2]]});
-    return winner;
+    return game_status;
   };
 
-  vector<vector<int>> board_combinations = {
+  vector<vector<int>> board_win_combinations = {
       {0, 1, 2}, {0, 3, 6}, {0, 4, 8}, {1, 4, 7},
       {2, 4, 6}, {2, 5, 8}, {3, 4, 5}, {6, 7, 8},
   };
 
-  bool is_same_in_row = false;
-  Player same_row_mark = Player::None;
+  bool is_same_player_mark_in_row = false;
+  Player player_mark = Player::None;
 
-  for (const auto &combination : board_combinations) {
+  for (const auto &board_combination : board_win_combinations) {
 
-    auto board_combination_status = board_row_status(combination);
+    auto board_combination_status = get_is_same_mark_and_winning_player(board_combination);
 
-    is_same_in_row = get<0>(board_combination_status);
-    same_row_mark = get<1>(board_combination_status);
+    is_same_player_mark_in_row = get<0>(board_combination_status);
+    player_mark = get<1>(board_combination_status);
 
-    if (is_same_in_row && same_row_mark != Player::None) {
-      player_winner = same_row_mark;
+    if (is_same_player_mark_in_row && player_mark != Player::None) {
+      player_winner = player_mark;
       break;
     } else {
-      is_same_in_row = false;
-      same_row_mark = Player::None;
+      is_same_player_mark_in_row = false;
+      player_mark = Player::None;
     }
   }
 }
