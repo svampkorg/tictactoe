@@ -7,8 +7,8 @@
 using namespace std;
 
 struct UiElements {
-    const static ftxui::Element build_board(const Toestate &state);
-    const static ftxui::Element declare_winner(const Toestate &state);
-    const static ftxui::Element active_player(const Toestate &state);
-    const static ftxui::Element instructions(const Toestate &state);
+    const static ftxui::Element board_element(const Toestate &state);
+    const static ftxui::Element winner_element(const Toestate &state);
+    const static ftxui::Element player_element(const Toestate &state);
+    const static ftxui::Element instructions_element(const Toestate &state);
 };

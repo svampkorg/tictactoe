@@ -14,26 +14,26 @@ int main() {
   using namespace ftxui;
   auto state = Toestate();
 
-  state.new_board();
+  state.reset_game_board();
 
-  Element element_instructions = UiElements::instructions(state);
+  Element element_instructions = UiElements::instructions_element(state);
 
   Element element_board;
   Element element_active_player;
-  Element screen_document;
+  Element element_screen;
 
-  auto draw_screen_document = [&element_board, &element_instructions,
+  auto generate_screen_elements = [&element_board, &element_instructions,
                                &element_active_player,
-                               &screen_document](const Toestate &state) {
-    const auto winner = state.get_winner();
+                               &element_screen](const Toestate &state) {
+    const auto winner = state.get_game_winner();
     const auto board_full = state.board_is_fully_played();
 
-    element_active_player = UiElements::active_player(state);
+    element_active_player = UiElements::player_element(state);
 
     if (winner == Player::None && !board_full) {
-      element_board = UiElements::build_board(state);
+      element_board = UiElements::board_element(state);
 
-      screen_document = vbox({
+      element_screen = vbox({
           element_active_player,
           hbox({
               element_board | flex,
@@ -41,9 +41,9 @@ int main() {
           element_instructions,
       });
     } else {
-      element_board = UiElements::declare_winner(state);
+      element_board = UiElements::winner_element(state);
 
-      screen_document = vbox({
+      element_screen = vbox({
           hbox({
               element_board | flex,
           }),
@@ -52,10 +52,10 @@ int main() {
     }
   };
 
-  draw_screen_document(state);
+  generate_screen_elements(state);
 
   auto screen = ScreenInteractive::TerminalOutput();
-  auto renderer = Renderer([&] { return screen_document; });
+  auto renderer = Renderer([&] { return element_screen; });
 
   system("clear");
 
@@ -80,25 +80,25 @@ int main() {
       break;
     case ' ':
       state.put_player_mark();
-      state.toggle_player();
-      state.run_board_check();
+      state.toggle_active_player();
+      state.run_game_winner_check();
       break;
     case 'N':
-      state.new_board();
+      state.reset_game_board();
       break;
     default:
       break;
     }
     system("clear");
 
-    const auto winner = state.get_winner();
+    const auto winner = state.get_game_winner();
     const auto board_full = state.board_is_fully_played();
 
     if (!(winner == Player::None && !board_full)) {
-      draw_screen_document(state);
-      state.new_board();
+      generate_screen_elements(state);
+      state.reset_game_board();
     } else {
-      draw_screen_document(state);
+      generate_screen_elements(state);
     }
 
     return false;

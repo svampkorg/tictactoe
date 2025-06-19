@@ -2,7 +2,7 @@
 
 Toestate::Toestate() : board(9) {}
 
-void Toestate::new_board() {
+void Toestate::reset_game_board() {
   fill(board.begin(), board.end(), Player::None);
   player_active = Player::Cross;
   player_winner = Player::None;
@@ -42,7 +42,7 @@ void Toestate::put_player_mark() {
   }
 }
 
-void Toestate::toggle_player() {
+void Toestate::toggle_active_player() {
   switch (player_active) {
   case Player::Circle:
     player_active = Player::Cross;
@@ -55,9 +55,9 @@ void Toestate::toggle_player() {
   }
 }
 
-const Player& Toestate::get_player() const { return player_active; }
-const Player& Toestate::get_winner() const { return player_winner; }
-const int& Toestate::get_cursor_pos() const { return cursor_pos; }
+const Player& Toestate::get_active_player() const { return player_active; }
+const Player& Toestate::get_game_winner() const { return player_winner; }
+const int& Toestate::get_cursor_position() const { return cursor_pos; }
 
 bool Toestate::board_is_fully_played() const {
 
@@ -66,7 +66,7 @@ bool Toestate::board_is_fully_played() const {
 
 }
 
-void Toestate::run_board_check() {
+void Toestate::run_game_winner_check() {
 
   auto get_is_same_mark_and_winning_player = [&](vector<int> combination) -> tuple<bool, Player> {
     auto game_status = get_game_status_from_combination(

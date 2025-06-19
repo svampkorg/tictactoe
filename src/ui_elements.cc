@@ -1,7 +1,7 @@
 #include "ui_elements.h"
 #include "toestate.h"
 
-const ftxui::Element UiElements::build_board(const Toestate &state) {
+const ftxui::Element UiElements::board_element(const Toestate &state) {
 
   using namespace ftxui;
 
@@ -33,8 +33,8 @@ const ftxui::Element UiElements::build_board(const Toestate &state) {
                      }) |
                      border;
 
-      if (i == state.get_cursor_pos()) {
-        switch (state.get_player()) {
+      if (i == state.get_cursor_position()) {
+        switch (state.get_active_player()) {
         case Player::Circle:
           return content | color(Color::Green);
         case Player::Cross:
@@ -72,11 +72,11 @@ const ftxui::Element UiElements::build_board(const Toestate &state) {
   return document;
 }
 
-const ftxui::Element UiElements::declare_winner(const Toestate &state) {
+const ftxui::Element UiElements::winner_element(const Toestate &state) {
   using namespace ftxui;
 
   Element winner_text;
-  switch (state.get_winner()) {
+  switch (state.get_game_winner()) {
   case Player::Circle:
     winner_text = text("Circle winns!") | color(Color::Green);
     break;
@@ -104,11 +104,11 @@ const ftxui::Element UiElements::declare_winner(const Toestate &state) {
   return document;
 }
 
-const ftxui::Element UiElements::active_player(const Toestate &state) {
+const ftxui::Element UiElements::player_element(const Toestate &state) {
   using namespace ftxui;
 
   Element player_text;
-  switch (state.get_player()) {
+  switch (state.get_active_player()) {
   case Player::Circle:
     player_text = text("It's Circle's turn") | color(Color::Green);
     break;
@@ -135,7 +135,7 @@ const ftxui::Element UiElements::active_player(const Toestate &state) {
   return document;
 }
 
-const ftxui::Element UiElements::instructions(const Toestate &state) {
+const ftxui::Element UiElements::instructions_element(const Toestate &state) {
 
   using namespace ftxui;
 
