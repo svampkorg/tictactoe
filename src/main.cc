@@ -28,21 +28,28 @@ int main() {
     const auto winner = state.get_winner();
     const auto board_full = state.board_is_fully_played();
 
-    if (winner == Player::None && !board_full) {
-      element_board = UiElements::build_board(state);
-    } else {
-      element_board = UiElements::declare_winner(state);
-    }
-
     element_active_player = UiElements::active_player(state);
 
-    screen_document = vbox({
-        element_active_player,
-        hbox({
-            element_board | flex,
-        }),
-        element_instructions,
-    });
+    if (winner == Player::None && !board_full) {
+      element_board = UiElements::build_board(state);
+
+      screen_document = vbox({
+          element_active_player,
+          hbox({
+              element_board | flex,
+          }),
+          element_instructions,
+      });
+    } else {
+      element_board = UiElements::declare_winner(state);
+
+      screen_document = vbox({
+          hbox({
+              element_board | flex,
+          }),
+          element_instructions,
+      });
+    }
   };
 
   draw_screen_document(state);
@@ -83,8 +90,6 @@ int main() {
     }
     system("clear");
 
-    state.run_board_check();
-
     const auto winner = state.get_winner();
     const auto board_full = state.board_is_fully_played();
 
@@ -94,9 +99,6 @@ int main() {
     } else {
       draw_screen_document(state);
     }
-
-
-    // element_active_player = UiElements::active_player(state);
 
     return false;
   });
