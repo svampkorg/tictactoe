@@ -52,14 +52,14 @@ int main() {
 
     state.check_board();
 
-    auto winner = state.get_winner();
-    auto board_full = state.board_is_fully_played();
+    const auto winner = state.get_winner();
+    const auto board_full = state.board_is_fully_played();
 
-    if ((winner != Player::None && !board_full) || (winner == Player::None && board_full)) {
+    if (winner == Player::None && !board_full) {
+      document = state.get_board();
+    } else {
       document = state.declare_winner();
       state.new_board();
-    } else {
-      document = state.get_board();
     }
 
     return false;
