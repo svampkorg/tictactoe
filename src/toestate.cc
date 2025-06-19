@@ -46,7 +46,6 @@ ftxui::Element Toestate::get_board() {
   Elements line;
 
   for (int i = 0; i < board.size(); ++i) {
-    // const auto &place = board[i];
 
     string left = " ";
     string right = " ";
@@ -160,8 +159,6 @@ Player Toestate::get_winner() { return player_winner; }
 bool Toestate::board_is_fully_played() {
   return all_of(board.begin(), board.end(),
                 [](const auto &element) { return element != Player::None; });
-  // return any_of(board.begin(), board.end(),
-  //               [](const auto &element) { element != Player::None; });
 }
 
 void Toestate::check_board() {

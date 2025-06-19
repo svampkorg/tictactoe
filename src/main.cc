@@ -67,16 +67,5 @@ int main() {
 
   screen.Loop(component);
 
-  // Element document = hbox({
-  //     text("left") | border,
-  //     text("middle") | border | flex,
-  //     text("right") | border,
-  // });
-  // auto screen =
-  //     ftxui::Screen::Create(Dimension::Full(), Dimension::Fit(document));
-  // Render(screen, document);
-  // screen.Print();
-  // std::cout << screen.ToString() << '\0' << endl;
-
   return EXIT_SUCCESS;
 }
