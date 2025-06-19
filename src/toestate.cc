@@ -14,10 +14,10 @@ ftxui::Element Toestate::declare_winner() {
   Element winner_text;
   switch (player_winner) {
   case Player::Circle:
-    winner_text = text("0") | color(Color::Green);
+    winner_text = text("Circle") | color(Color::Green);
     break;
   case Player::Cross:
-    winner_text = text("X") | color(Color::Red);
+    winner_text = text("Cross") | color(Color::Red);
     break;
   case Player::None:
     winner_text = text("It's a draw!") | color(Color::White);
