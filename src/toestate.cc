@@ -50,7 +50,7 @@ ftxui::Element Toestate::get_board() {
     string left = " ";
     string right = " ";
 
-    auto board_place = [&](Player place) {
+    auto board_place = [&](const Player place) {
       Element player_mark_text = text(" ");
 
       switch (place) {
@@ -178,7 +178,7 @@ void Toestate::check_board() {
   bool is_same_in_row = false;
   Player same_row_mark = Player::None;
 
-  for (auto &combination : board_combinations) {
+  for (const auto &combination : board_combinations) {
 
     auto board_combination_status = board_row_status(combination);
 
