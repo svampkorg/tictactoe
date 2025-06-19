@@ -8,7 +8,7 @@ void Toestate::new_board() {
   player_active = Player::Cross;
   player_winner = Player::None;
 }
-ftxui::Element Toestate::declare_winner() {
+ftxui::Element Toestate::ftxui_declare_winner() {
   using namespace ftxui;
 
   Element winner_text;
@@ -28,7 +28,7 @@ ftxui::Element Toestate::declare_winner() {
     auto content = vbox({
         hbox({winner_text}) | color(Color::Purple),
     });
-    return window(text(L" Winner is! "), content);
+    return window(text(L" Game result! "), content);
   };
 
   Element document =
@@ -38,7 +38,8 @@ ftxui::Element Toestate::declare_winner() {
 
   return document;
 }
-ftxui::Element Toestate::get_board() {
+
+ftxui::Element Toestate::ftxui_get_board() {
 
   using namespace ftxui;
 

@@ -13,7 +13,7 @@ int main() {
 
   state.new_board();
 
-  auto document = state.get_board();
+  auto document = state.ftxui_get_board();
   auto screen = ScreenInteractive::TerminalOutput();
   auto renderer = Renderer([&] { return document; });
 
@@ -56,9 +56,9 @@ int main() {
     const auto board_full = state.board_is_fully_played();
 
     if (winner == Player::None && !board_full) {
-      document = state.get_board();
+      document = state.ftxui_get_board();
     } else {
-      document = state.declare_winner();
+      document = state.ftxui_declare_winner();
       state.new_board();
     }
 

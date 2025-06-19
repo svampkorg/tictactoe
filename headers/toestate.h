@@ -25,8 +25,10 @@ class Toestate {
     Player get_player();
     Player get_winner();
 
-    ftxui::Element get_board();
-    ftxui::Element declare_winner();
+    ftxui::Element ftxui_get_board();
+    ftxui::Element ftxui_declare_winner();
+    ftxui::Element ftxui_active_player();
+    ftxui::Element ftxui_instructions();
 
     void move_cursor_up();
     void move_cursor_down();
