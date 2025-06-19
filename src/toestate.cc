@@ -1,5 +1,4 @@
 #include "../headers/toestate.h"
-#include <algorithm>
 
 Toestate::Toestate() : board(9) {}
 
