@@ -1,5 +1,4 @@
 #include "../headers/toestate.h"
-#include "ftxui/dom/elements.hpp"
 #include <algorithm>
 
 Toestate::Toestate() : board(9) {}
@@ -138,8 +137,6 @@ void Toestate::put_player_mark() {
     board[cursor_pos] = player_active;
   }
 }
-
-void Toestate::put_none() { board[cursor_pos] = Player::None; }
 
 void Toestate::toggle_player() {
   switch (player_active) {

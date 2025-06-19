@@ -1,6 +1,5 @@
 #pragma once
 
-#include <sstream>
 #include <vector>
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/screen.hpp>
@@ -14,9 +13,7 @@ class Toestate {
     vector<Player> board;
     Player player_active;
     Player player_winner;
-    stringstream sstream;
     int cursor_pos = 4;
-    void put_none();
 
   public:
     Toestate();
