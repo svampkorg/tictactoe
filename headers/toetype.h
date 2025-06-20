@@ -9,4 +9,4 @@ enum class Player {
 };
 
 bool has_value(Player p);
-tuple<bool, Player> get_game_status_from_combination(vector<Player>);
+tuple<bool, Player> get_winner_from_combination(vector<Player>);

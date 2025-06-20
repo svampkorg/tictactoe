@@ -69,7 +69,7 @@ bool Toestate::board_is_fully_played() const {
 void Toestate::run_game_winner_check() {
 
   auto get_is_same_mark_and_winning_player = [&](vector<int> combination) -> tuple<bool, Player> {
-    auto game_status = get_game_status_from_combination(
+    auto game_status = get_winner_from_combination(
         {board[combination[0]], board[combination[1]], board[combination[2]]});
     return game_status;
   };
