@@ -1,4 +1,5 @@
 #include "../headers/toestate.h"
+#include <tuple>
 
 Toestate::Toestate() : board(9) {}
 
@@ -79,15 +80,10 @@ void Toestate::run_game_winner_check() {
       {2, 4, 6}, {2, 5, 8}, {3, 4, 5}, {6, 7, 8},
   };
 
-  bool is_same_player_mark_in_row = false;
-  Player player_mark = Player::None;
-
   for (const auto &board_combination : board_win_combinations) {
 
     auto board_combination_status = get_is_same_mark_and_winning_player(board_combination);
-
-    is_same_player_mark_in_row = get<0>(board_combination_status);
-    player_mark = get<1>(board_combination_status);
+    auto& [is_same_player_mark_in_row, player_mark] = board_combination_status;
 
     if (is_same_player_mark_in_row && player_mark != Player::None) {
       player_winner = player_mark;
