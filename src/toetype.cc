@@ -11,7 +11,7 @@ bool has_value(Player p) {
   return true;
 }
 
-tuple<bool, Player> get_game_status_from_combination(vector<Player> board_row) {
+tuple<bool, Player> get_winner_from_combination(vector<Player> board_row) {
 
   Player player = board_row[0];
   auto begin = board_row.begin();
