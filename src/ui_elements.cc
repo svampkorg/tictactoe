@@ -15,15 +15,19 @@ const ftxui::Element UiElements::board_element(const Toestate &state) {
     string right = " ";
 
     auto board_place = [&](const Player place) {
+
       Element player_mark_text = text(" ");
 
       switch (place) {
+
       case Player::Circle:
         player_mark_text = text("O") | color(Color::Green);
         break;
+
       case Player::Cross:
         player_mark_text = text("X") | color(Color::Red);
         break;
+
       default:
         break;
       }
@@ -34,11 +38,15 @@ const ftxui::Element UiElements::board_element(const Toestate &state) {
                      border;
 
       if (i == state.get_cursor_position()) {
+
         switch (state.get_active_player()) {
+
         case Player::Circle:
           return content | color(Color::Green);
+
         case Player::Cross:
           return content | color(Color::Red);
+
         default:
           break;
         }
@@ -49,14 +57,17 @@ const ftxui::Element UiElements::board_element(const Toestate &state) {
     line.push_back(board_place(board[i]));
 
     switch (i) {
+
     case 2:
       lines.push_back(line);
       line.clear();
       break;
+
     case 5:
       lines.push_back(line);
       line.clear();
       break;
+
     case 8:
       lines.push_back(line);
       line.clear();
@@ -76,23 +87,29 @@ const ftxui::Element UiElements::winner_element(const Toestate &state) {
   using namespace ftxui;
 
   Element winner_text;
+
   switch (state.get_game_winner()) {
+
   case Player::Circle:
     winner_text = text("Circle winns!") | color(Color::Green);
     break;
+
   case Player::Cross:
     winner_text = text("Cross winns!") | color(Color::Red);
     break;
+
   case Player::None:
     winner_text = text("It's a draw!") | color(Color::White);
     break;
   }
 
   auto results = [&] {
+
     auto content = vbox({
         hbox({winner_text}) | color(Color::White),
     });
     return window(text(L" Game result! "), content);
+
   };
 
   Element document =
@@ -105,24 +122,31 @@ const ftxui::Element UiElements::winner_element(const Toestate &state) {
 }
 
 const ftxui::Element UiElements::player_element(const Toestate &state) {
+
   using namespace ftxui;
 
   Element player_text;
+
   switch (state.get_active_player()) {
+
   case Player::Circle:
     player_text = text("It's Circle's turn") | color(Color::Green);
     break;
+
   case Player::Cross:
     player_text = text("It's Cross's turn") | color(Color::Red);
     break;
+
   default:
     break;
   }
 
   auto player_text_content = [&] {
+
     auto content = vbox({
         hbox({player_text}) | color(Color::White),
     });
+
     return content;
     // return window(text(L" Game result! "), content);
   };
@@ -140,13 +164,16 @@ const ftxui::Element UiElements::instructions_element(const Toestate &state) {
   using namespace ftxui;
 
   auto instructions_content = [&] {
+
     auto content = vbox({
         hbox({text("Move around using hjkl")}) | color(Color::White),
         hbox({text("Press space to make a move")}) | color(Color::White),
         hbox({text("Press n to start a new game")}) | color(Color::White),
         hbox({text("Press q to quit")}) | color(Color::White),
     });
+
     return content;
+
   };
 
   Element document =

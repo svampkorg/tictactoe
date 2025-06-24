@@ -9,6 +9,7 @@
 using namespace std;
 
 class Toestate {
+
   private:
     vector<Player> board;
     Player player_active;
