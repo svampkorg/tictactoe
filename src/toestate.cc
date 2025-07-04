@@ -1,5 +1,6 @@
 #include "../headers/toestate.h"
 #include <tuple>
+#include <algorithm>
 
 Toestate::Toestate() : board(9) {
 
