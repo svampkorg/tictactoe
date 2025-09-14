@@ -1,5 +1,6 @@
 #include "../headers/toestate.h"
 #include <tuple>
+#include <functional>
 
 Toestate::Toestate() : board(9) {
 
@@ -53,10 +54,11 @@ void Toestate::move_cursor_right() {
 
 }
 
-void Toestate::put_player_mark() {
+void Toestate::put_player_mark(OnMarkPlacedCallback on_mark_placed) {
 
   if (board[cursor_pos] == Player::None) {
     board[cursor_pos] = player_active;
+    on_mark_placed();
   }
 
 }
