@@ -24,9 +24,9 @@ class Toestate {
 
     void reset_game_board();
 
-    const Player& get_active_player() const;
-    const Player& get_game_winner() const;
-    const int& get_cursor_position() const;
+    Player get_active_player() const;
+    Player get_game_winner() const;
+    int get_cursor_position() const;
     const vector<Player>& get_board() const;
 
     void move_cursor_up();
