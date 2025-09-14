@@ -91,15 +91,27 @@ bool Toestate::board_is_fully_played() const {
 
 }
 
+tuple<bool, Player> Toestate::get_winner_from_combination(const vector<Player>& board_row) {
+
+  Player player = board_row[0];
+  auto begin = board_row.begin();
+  auto end = board_row.end();
+
+  if (any_of(begin, end,
+             [](const auto &element) { return element == Player::None; })) {
+
+    return {false, Player::None};
+
+  } else {
+
+    auto is_same = all_of(
+        begin, end, [begin](const auto &element) { return element == *begin; });
+    return {is_same, player};
+
+  }
+}
+
 void Toestate::run_game_winner_check() {
-
-  auto get_is_same_mark_and_winning_player = [&](vector<int> combination) -> tuple<bool, Player> {
-
-    auto game_status = get_winner_from_combination(
-        {board[combination[0]], board[combination[1]], board[combination[2]]});
-    return game_status;
-
-  };
 
   vector<vector<int>> board_win_combinations = {
       {0, 1, 2}, {0, 3, 6}, {0, 4, 8}, {1, 4, 7},
@@ -108,19 +120,13 @@ void Toestate::run_game_winner_check() {
 
   for (const auto &board_combination : board_win_combinations) {
 
-    auto board_combination_status = get_is_same_mark_and_winning_player(board_combination);
+    auto board_combination_status = get_winner_from_combination(
+        {board[board_combination[0]], board[board_combination[1]], board[board_combination[2]]});
     auto& [is_same_player_mark_in_row, player_mark] = board_combination_status;
 
     if (is_same_player_mark_in_row && player_mark != Player::None) {
-
       player_winner = player_mark;
       break;
-
-    } else {
-
-      is_same_player_mark_in_row = false;
-      player_mark = Player::None;
-
     }
   }
 }
