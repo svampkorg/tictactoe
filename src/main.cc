@@ -22,13 +22,9 @@ int main() {
   Element element_active_player;
   Element element_screen;
 
-  auto generate_screen_elements = [
-    &element_board,
-    &element_instructions,
-    &element_active_player,
-    &element_screen
-  ](const Toestate &state) {
-
+  auto generate_screen_elements = [&element_board, &element_instructions,
+                                   &element_active_player,
+                                   &element_screen](const Toestate &state) {
     const auto winner = state.get_game_winner();
     const auto board_full = state.board_is_fully_played();
 
