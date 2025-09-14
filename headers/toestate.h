@@ -5,8 +5,11 @@
 #include <ftxui/screen/screen.hpp>
 #include <sys/qos.h>
 #include "toetype.h"
+#include <functional>
 
 using namespace std;
+
+using OnMarkPlacedCallback = std::function<void()>;
 
 class Toestate {
 
@@ -31,9 +34,12 @@ class Toestate {
     void move_cursor_left();
     void move_cursor_right();
 
-    void put_player_mark();
+    void put_player_mark(OnMarkPlacedCallback on_mark_placed);
     void toggle_active_player();
 
     void run_game_winner_check();
     bool board_is_fully_played() const;
+
+  private:
+    tuple<bool, Player> get_winner_from_combination(const vector<Player>& combination);
 };
