@@ -62,7 +62,6 @@ int main() {
   system("clear");
 
   auto component = CatchEvent(renderer, [&](Event event) {
-
     auto character = event.character().front();
 
     switch (character) {
@@ -88,9 +87,10 @@ int main() {
       break;
 
     case ' ':
-      state.put_player_mark();
-      state.toggle_active_player();
-      state.run_game_winner_check();
+      state.put_player_mark([&] {
+        state.toggle_active_player();
+        state.run_game_winner_check();
+      });
       break;
 
     case 'N':
@@ -114,7 +114,6 @@ int main() {
     } else {
 
       generate_screen_elements(state);
-
     }
 
     return false;
