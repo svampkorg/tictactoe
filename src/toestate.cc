@@ -80,9 +80,9 @@ void Toestate::toggle_active_player() {
   }
 }
 
-const Player& Toestate::get_active_player() const { return player_active; }
-const Player& Toestate::get_game_winner() const { return player_winner; }
-const int& Toestate::get_cursor_position() const { return cursor_pos; }
+Player Toestate::get_active_player() const { return player_active; }
+Player Toestate::get_game_winner() const { return player_winner; }
+int Toestate::get_cursor_position() const { return cursor_pos; }
 
 bool Toestate::board_is_fully_played() const {
 
